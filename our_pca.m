@@ -5,7 +5,7 @@ function [dataMean, sort_EigVec, sort_EigVal] = our_pca(origData,dim)
 %dataMean: mean (center) of data values (1x2 matrix)
 %V: 2x2 matrix containing eigenvectors in colums (sorted by descending 
 % eigenvalues)
-%D: 1x2 diagonal matrix containing eigenvalus (sorted descending)
+%D: 1x2 vector containing eigenvalus (sorted descending)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %--------------------------------------------------------------------------
 %Aim: eigenvalues of the covariance matrix encode the variability of the 
@@ -27,7 +27,7 @@ origData = (origData' - dataMean)';
 %3.Step: Sort eigenvalues and eigenvectors in descending order. 
 %Retain only the k eigenvectors with highest corresponding eigenvalues
 [sort_B, sort_I ]= sort(diag(EigVal), 'descend'); % == latent 
-sort_EigVal = diag(sort_B); 
+sort_EigVal = sort_B; 
 for j = 1:dim
 sort_EigVec(:,j) = EigVec(:,sort_I(j)); 
 end 
