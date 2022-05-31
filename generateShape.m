@@ -5,9 +5,9 @@ function [shape] = generateShape(eig_vectors, b, mean_shapes)
 
 
 %%% INPUT
-% eig_vectors: the set of eigenvectores for the set of shapes
-% b: array used to choose the eigenvectores of interest
 % mean_shape: the mean of all shapes
+% eigenvectors: the set of eigenvectores for the set of shapes
+% b: array used to choose the eigenvectores of interest
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %--------------------------------------------------------------------------
 %Aim: takes a parameter vector b as input and computes new shapes, where

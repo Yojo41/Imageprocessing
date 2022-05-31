@@ -4,10 +4,9 @@ function [] = plotShape(eig_vectors, b, mean_shapes, col)
 
 
 %%% INPUT
-% eig_vectors: the set of eigenvectores for the set of shapes
-% b: array used to choose the eigenvectores of interest
 % mean_shape: the mean of all shapes
-% col: color
+% eigenvectors: the set of eigenvectores for the set of shapes
+% b: array used to choose the eigenvectores of interest
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %--------------------------------------------------------------------------
 %Aim: Plots the generated shape and the mean of all shapes.
