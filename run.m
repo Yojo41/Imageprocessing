@@ -1,55 +1,79 @@
 %% run.m
 
-function run(ourData,split)
-% Input: ourData 
-% split: 
-%calculation of the dimensions of the inputdata 
-dim = min(size(ourData)); 
-len = length(ourData); 
+function run()
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Exercise 1 
-covmatrix = ourCov(ourData'); 
-%test_cov = cov(ourData'); 
-%isalmost(covmatrix,test_cov,1e-10)
-if dim == 2
-    plot_ourCov(ourData'); 
-    title('covariance matrix')
-end 
+clear all; clc; 
+data2D = load("daten.mat");
+data2D = struct2cell(data2D); 
+    for i = 1:4
+    covmatrix = ourCov(data2D{i,1}'); 
+    %test_cov = cov(ourData'); 
+    %isalmost(covmatrix,test_cov,1e-10)
+    plot_ourCov(data2D{i,1}'); 
+    title(['covariance matrix of data' num2str(i)]); 
+    end 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Exercise 2 (a)
-[dataMean, EigVec, EigVal] = our_pca(ourData,dim); 
-%[coeff,score,latent,tsquared,explained,mu] = pca(ourData','NumComponents',2); 
-%isalmost(abs(coeff),abs(EigVec),1e-10); 
-%% Exercise 2 (b) 
-%Multiply the original data by the principal component vectors to get the 
-%projections of the original data on the principal component vector space.
-%scores will be orthogonal by construction, which you can check corr(scores)
-scores = (ourData - dataMean)' *  EigVec; 
-%isalmost(abs(scores),abs(score),1e-10); 
+clear all; clc; 
+data2D = load("daten.mat");
+data2D = struct2cell(data2D); 
+    for i = 1:4
+    dim = min(size(data2D{i,1}));
+    len = length(data2D{i,1}); 
+    [dataMean, EigVec, EigVal] = our_pca(data2D{i,1},dim); 
+    %[coeff,score,latent,tsquared,explained,mu] = pca(ourData'); ,'NumComponents',2); 
+    %isalmost(abs(coeff),abs(EigVec),1e-10); 
+    %% Exercise 2 (b) 
 
-recData = ((scores * EigVec')' + repmat(dataMean,1,len))';  
-%reconstructed = score * coeff' + mu;
-%isalmost(abs(recData),abs(reconstructed),1e-10); 
+    %Multiply the original data by the principal component vectors to get the 
+    %projections of the original data on the principal component vector space.
+    %scores will be orthogonal by construction, which you can check corr(scores)
+    scores = (data2D{i,1} - dataMean)' *  EigVec; 
+    %isalmost(abs(scores),abs(score),1e-10); 
 
-plot2DPCA(ourData',dataMean',recData,EigVec,EigVal',1,1)
-title('PCA 2D - original and reconstructed data')
-%% Exercise 3 
-if split == 1 
+    recData = ((scores * EigVec')' + repmat(dataMean,1,len))';  
+    %reconstructed = score * coeff' + mu;
+    %isalmost(abs(recData),abs(reconstructed),1e-10); 
+    plot2DPCA(data2D{i,1}',dataMean',recData,EigVec,EigVal',1,1)
+    title(['PCA 2D - original and reconstructed data'  num2str(i)]); 
+    end 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Exercise 3  - set split to 1 - 
+clear all; clc; 
+j=2; % data2 is used 
+data2D = load("daten.mat");
+data2D = struct2cell(data2D);
+dim = min(size(data2D{j,1}));
+len = length(data2D{j,1}); 
+
     % going through the 1st,2nd,3rd.... pca component
     for i = 1:dim
-scores_ms = (ourData - dataMean)' *  EigVec(:,i); 
-recData_ms = ((scores_ms * EigVec(:,i)')' + repmat(dataMean,1,len))'; 
-plot2DPCA(ourData',dataMean',recData_ms,EigVec,EigVal',1,1)
-title('main and side components of the PCA are used for reconstruction')
+    [dataMean, EigVec, EigVal] = our_pca(data2D{j,1},dim); 
+    scores_ms = (data2D{j,1} - dataMean)' *  EigVec(:,i); 
+    recData_ms = ((scores_ms * EigVec(:,i)')' + repmat(dataMean,1,len))'; 
+    plot2DPCA(data2D{j,1}',dataMean',recData_ms,EigVec,EigVal',1,1)
+    if i == 1
+    title('main components of the PCA are used for reconstruction of data2')
+    error = abs(recData_ms) - abs(data2D{j,1}'); 
+    error_main(i,:) = sum(mean(error,1)); 
+    elseif i == 2
+    title('side components of the PCA are used for reconstruction of data2')
+    error = abs(recData_ms) - abs(data2D{j,1}'); 
+    error_side(i,:) = sum(mean(error,1)); 
     end 
-end 
-%% Exercise 4 (b) 
-if split == 2   
-plot3DPCA(ourData',dataMean',EigVec,EigVal',1,1)
-end 
-end 
+    end 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Exercise 4 (b) -set split to 2 -
+clear all; clc; 
+data3D = load("daten3d.mat");
+data3D = struct2cell(data3D);
+dim = min(size(data3D{1,1}));
 
-
-
+[dataMean, EigVec, EigVal] = our_pca(data3D{1,1},dim); 
+plot3DPCA(data3D{1,1}',dataMean',EigVec,EigVal',1,1)
+title('Reconstruction of the 3D data under usage of the first two components')
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Exercise 5
 
@@ -242,16 +266,5 @@ figure;
 plotShape(eig_vectors_ex5, b_aux, mean_shapes_ex5, 'blue');
 title('Shape generation - first 2 eigenvectors (79.28%)');
 legend('Constructed shape', 'Mean shape', Location='southeast');
-
-
-
-
-
-
-
-
-
-
-
-
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+end 
